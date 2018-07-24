@@ -8,18 +8,22 @@ $app = new \Slim\App;
 
 $app->get('/api/locations', function (Request $request, Response $response, array $args) {
     $sql = "SELECT * FROM location";
-
     try{
         //get db obj
         $db = new db();
         $db = $db->connect();
 
         $stmt = $db->query($sql);
+
         $locations = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-        $json = json_encode(array(
-            "results" => $locations));
-        echo $json;
+
+        //$json = json_encode(array("results" => array("geometry" => $locations)));
+        $json = array("results" => array(array("geometry" => $locations)));
+        $result = json_encode($json);
+        //$results = json_encode($result);
+
+        echo $result;
             //echo json_encode($locations);
     } catch (PDOException $e) {
         echo '{"error": {"text": '.$e->getMessage().'}';
